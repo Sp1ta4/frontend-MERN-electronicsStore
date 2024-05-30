@@ -1,0 +1,24 @@
+.wrapper
+  width: 100%
+  min-height: 100dvh
+  background-color: #CAD1FF !important
+  .authImage
+    position: relative
+    width: 500px
+    height: 500px
+    &::before
+      content: ''
+      position: absolute
+      top: 0
+      left: 0
+      right: 0
+      bottom: 0
+      background-color: #ec78ca
+      filter: blur(200px)
+      z-index: 1
+    img
+      z-index: 2
+  .mainCol
+    min-height: 100dvh
+    
+      
