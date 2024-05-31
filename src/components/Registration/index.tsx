@@ -1,6 +1,8 @@
 import styles from './Registration.module.sass';
 import { Button, Link, TextField } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { fetchRegister } from '../../store/Slices/AuthSlice';
+import { useAppDispatch } from '../../store/hooks';
 interface IRegistrationProps {
   setToggle: () => void;
 }
@@ -8,7 +10,7 @@ interface IForm {
   email: string;
   username: string;
   password: string;
-  confirmPassword: string;
+  passwordConfirmation: string;
 }
 const Registration: React.FC<IRegistrationProps> = ({ setToggle }) => {
   const {
@@ -16,10 +18,16 @@ const Registration: React.FC<IRegistrationProps> = ({ setToggle }) => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<IForm>({ mode: 'onChange' });
-
-  const submit: SubmitHandler<IForm> = data => {
-    console.log(data);
+  } = useForm<IForm>({
+    mode: 'onChange',
+  });
+  const dispatch = useAppDispatch();
+  const submit: SubmitHandler<IForm> = async data => {
+    const response = await dispatch(fetchRegister(data));
+    if (typeof response.payload !== 'string' && 'token' in response.payload!) {
+      const token = response.payload.token;
+      window.localStorage.setItem('token', token);
+    }
   };
 
   const passwordOptions = {
@@ -97,33 +105,21 @@ const Registration: React.FC<IRegistrationProps> = ({ setToggle }) => {
           {...register('password', passwordOptions)}
         />
         <TextField
-          error={errors.confirmPassword ? true : false}
-          helperText={errors.confirmPassword?.message}
+          error={errors.passwordConfirmation ? true : false}
+          helperText={errors.passwordConfirmation?.message}
           fullWidth
           id='outlined-basic-cps'
           label='Confirm password'
           variant='outlined'
           type='password'
           margin='normal'
-          {...register('confirmPassword', confirmPasswordOptions)}
+          {...register('passwordConfirmation', confirmPasswordOptions)}
         />
 
-        <Button
-          fullWidth
-          variant='contained'
-          size='large'
-          className='mt-4'
-          color='success'
-          type='submit'
-        >
+        <Button fullWidth variant='contained' size='large' className='mt-4' color='success' type='submit'>
           Зарегистрироваться
         </Button>
-        <Link
-          component='button'
-          variant='body2'
-          onClick={setToggle}
-          className='mt-4'
-        >
+        <Link component='button' variant='body2' onClick={setToggle} className='mt-4'>
           Войти
         </Link>
       </form>

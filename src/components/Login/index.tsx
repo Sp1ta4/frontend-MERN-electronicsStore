@@ -2,10 +2,9 @@ import styles from './Login.module.sass';
 import { Button, Link, TextField } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchLogin, selectIsAuth } from '../../store/Slices/AuthSlice';
+import { useDispatch } from 'react-redux';
+import { fetchLogin } from '../../store/Slices/AuthSlice';
 import { AppDispatch } from '../../store';
-import { Navigate } from 'react-router-dom';
 
 interface ILoginProps {
   setToggle: () => void;
@@ -17,7 +16,6 @@ interface IForm {
 }
 
 const Login: React.FC<ILoginProps> = ({ setToggle }) => {
-  const isAuth = useSelector(selectIsAuth);
   const dispatch: AppDispatch = useDispatch();
   const {
     register,
@@ -25,10 +23,6 @@ const Login: React.FC<ILoginProps> = ({ setToggle }) => {
     formState: { errors },
   } = useForm<IForm>({
     mode: 'onChange',
-    defaultValues: {
-      email: 'gla33k@mail.ru',
-      password: '12345678A',
-    },
   });
 
   const submit: SubmitHandler<IForm> = async data => {
@@ -60,11 +54,7 @@ const Login: React.FC<ILoginProps> = ({ setToggle }) => {
       message: 'Invalid email address',
     },
   };
-  console.log(isAuth);
 
-  if (isAuth) {
-    return <Navigate to='/' />;
-  }
   return (
     <div
       className={`${styles.login} p-4 d-flex align-items-center rounded bg-light`}

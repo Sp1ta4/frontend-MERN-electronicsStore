@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from '../../axios';
-import { IAuthResponse, ILogin } from '../../interfaces/auth';
+import { IAuthResponse, ILogin, IRegister } from '../../interfaces/auth';
 import { isAxiosError, AxiosResponse, AxiosError } from 'axios';
 import { RootState } from '..';
 
@@ -17,10 +17,27 @@ const initialState: IAuthState = {
 };
 
 export const fetchUser = createAsyncThunk<IAuthResponse, void, { rejectValue: string }>(
-  'auth/fetchLogin',
+  'auth/fetchUser',
   async (_, { rejectWithValue }) => {
     try {
       const response: AxiosResponse<IAuthResponse> = await axios.get('/auth/getUser');
+      return response.data;
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError<{ message: string }>;
+        if (axiosError.response && axiosError.response.data && axiosError.response.data.message) {
+          return rejectWithValue(axiosError.response.data.message);
+        }
+      }
+      return rejectWithValue('Ошибка авторизации');
+    }
+  },
+);
+export const fetchRegister = createAsyncThunk<IAuthResponse, IRegister, { rejectValue: string }>(
+  'auth/fetchRegister',
+  async (params: IRegister, { rejectWithValue }) => {
+    try {
+      const response: AxiosResponse<IAuthResponse> = await axios.post('/auth/registration', params);
 
       return response.data;
     } catch (error) {
@@ -73,6 +90,40 @@ const authSlice = createSlice({
         state.data = payload;
       })
       .addCase(fetchLogin.rejected, (state, action) => {
+        state.data = null;
+        if (action.payload) {
+          state.error = action.payload;
+        } else {
+          state.error = 'Ошибка авторизации';
+        }
+        state.loading = false;
+      })
+      .addCase(fetchRegister.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchRegister.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.data = payload;
+      })
+      .addCase(fetchRegister.rejected, (state, action) => {
+        state.data = null;
+        if (action.payload) {
+          state.error = action.payload;
+        } else {
+          state.error = 'Ошибка авторизации';
+        }
+        state.loading = false;
+      })
+      .addCase(fetchUser.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUser.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.data = payload;
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
         state.data = null;
         if (action.payload) {
           state.error = action.payload;

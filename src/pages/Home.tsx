@@ -3,15 +3,22 @@ import Header from '../components/Header';
 import MainCatalog from '../components/MainCatalog';
 import { fetchProducts } from '../store/Slices/ProductsSlice';
 import { useEffect } from 'react';
-import { useAppDispatch } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import BasicWrapper from '../components/BasicWrapper';
+import { selectIsAuth } from '../store/Slices/AuthSlice';
+import { Navigate } from 'react-router-dom';
+import Products from '../components/Products';
 
 function Home() {
   const dispatch = useAppDispatch();
+  const isAuth = useAppSelector(selectIsAuth);
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
+  if (!isAuth) {
+    return <Navigate to='/login' />;
+  }
   return (
     <BasicWrapper>
       <Header />
@@ -22,6 +29,7 @@ function Home() {
         <h2 className='mb-4'>Каталог</h2>
         <MainCatalog />
       </div>
+      <Products />
     </BasicWrapper>
   );
 }
