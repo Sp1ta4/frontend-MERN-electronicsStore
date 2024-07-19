@@ -15,7 +15,6 @@ function Home() {
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
-
   if (!isAuth) {
     return <Navigate to='/login' />;
   }

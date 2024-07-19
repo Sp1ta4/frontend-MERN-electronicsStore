@@ -1,12 +1,13 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
 import Auth from './pages/Auth';
-import { useAppDispatch } from './store/hooks';
+import { useAppDispatch, useAppSelector } from './store/hooks';
 import { fetchUser } from './store/Slices/AuthSlice';
 import { useEffect } from 'react';
+import Cart from './pages/Cart';
 function App() {
   const dispatch = useAppDispatch();
-  // const isAuth = useAppSelector(selectIsAuth);
+  const { loading } = useAppSelector(state => state.auth);
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -21,8 +22,12 @@ function App() {
       path: '/login',
       element: <Auth />,
     },
+    {
+      path: '/cart',
+      element: <Cart />,
+    },
   ]);
-  return <RouterProvider router={router} />;
+  return loading ? null : <RouterProvider router={router} />;
 }
 
 export default App;

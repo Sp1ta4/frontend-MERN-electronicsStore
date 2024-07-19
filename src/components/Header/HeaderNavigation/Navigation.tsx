@@ -14,19 +14,11 @@ function Navigation() {
   };
 
   return (
-    <BottomNavigation
-      sx={{ width: '232px', colorRendering: 'red' }}
-      value={value}
-      onChange={handleChange}
-    >
-      <BottomNavigationAction
-        label='Каталог'
-        value='list'
-        icon={<FormatListBulletedOutlinedIcon />}
-      />
+    <BottomNavigation sx={{ width: '232px', colorRendering: 'red' }} value={value} onChange={handleChange}>
+      <BottomNavigationAction label='Каталог' value='list' icon={<FormatListBulletedOutlinedIcon />} />
       <BottomNavigationAction
         component={Link}
-        to='/basket'
+        to='/cart'
         label='Корзина'
         value='basket'
         icon={<ShoppingCartOutlinedIcon />}
