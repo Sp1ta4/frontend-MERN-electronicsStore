@@ -29,8 +29,6 @@ const productsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, { payload }) => {
-        console.log(payload, 2222);
-
         state.loading = false;
         state.products = payload.products;
       })
